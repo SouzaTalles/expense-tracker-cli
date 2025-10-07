@@ -6,7 +6,7 @@ import java.time.format.DateTimeFormatter;
 public class Expense {
     private final int ID;
     private String description;
-    private double amount;
+    private String amount;
     private LocalDate date;
 
     private static int nextId;
@@ -17,8 +17,9 @@ public class Expense {
         dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     }
 
-    public Expense(String category, double amount) {
-        this.ID = nextId++;
+    public Expense(String category, String amount) {
+        this.ID = nextId;
+        nextId++;
         this.description = category;
         this.amount = amount;
         this.date = LocalDate.now();
@@ -26,8 +27,7 @@ public class Expense {
 
     @Override
     public String toString() {
-        return "# ID DATE  DESCRIPTION  AMOUNT\n" +
-            "# " + ID + date.format(dtf) + description + amount;
+        return  ID + "," + date.format(dtf) + "," + description + "," +amount;
     }
 
     public void setDate() {
@@ -38,8 +38,9 @@ public class Expense {
         this.description = description;
     }
 
-    public void setAmount(double amount) {
-        if (amount < 0) amount = this.amount;
+    public void setAmount(String amount) {
+        double doubleAmount = Double.parseDouble(amount);
+        if (doubleAmount < 0) amount = this.amount;
         this.amount = amount;
     }
 
@@ -51,7 +52,7 @@ public class Expense {
         return description;
     }
 
-    public double getAmount() {
+    public String getAmount() {
         return amount;
     }
 
