@@ -12,14 +12,17 @@ public class App {
             case "help":
                 System.out.println(help);
                 break;
+
             case "add":
-                if (args.length != 6) {
-                    throw new IllegalArgumentException("Invalid arguments. Type \"help\" for a list of commands.");
-                }
+                if (args.length != 6) throw new IllegalArgumentException("Invalid arguments. Type \"help\" for a list of commands.");
                 service.Add(args);
                 break;
+
             case "delete":
+                if (args.length != 4) throw new IllegalArgumentException("Invalid arguments. Type \"help\" for a list of commands.");
+                service.delete(args);
                 break;
+
             case "list":
                 break;
             case "summary":

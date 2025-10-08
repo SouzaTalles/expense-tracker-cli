@@ -12,7 +12,7 @@ public class ExpenseService {
         ExpenseRepository.addExpense(expense);
     }
 
-    public void Delete(String[] ex) {
-
+    public void delete(String[] ex) {
+        ExpenseRepository.DeleteExpense(Integer.parseInt(ex[3]));
     }
 }

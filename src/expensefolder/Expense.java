@@ -35,6 +35,10 @@ public class Expense {
 
     public void initializeNextIdFromFile() {
         File file = new File("expense.csv");
+        if (!file.exists()) {
+            nextId = 1;
+            return;
+        }
         try (FileReader fr = new FileReader(file);
              BufferedReader br = new BufferedReader(fr)) {
             String line;

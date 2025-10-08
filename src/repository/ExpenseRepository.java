@@ -3,13 +3,14 @@ package repository;
 import expensefolder.Expense;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ExpenseRepository {
 
     private static File file = new File("expense.csv");
 
     public static void addExpense(Expense expense) {
-
         boolean fileExists = file.exists();
         try (FileWriter fw = new FileWriter(file, true);
              BufferedWriter bw = new BufferedWriter(fw)) {
@@ -26,18 +27,26 @@ public class ExpenseRepository {
         }
     }
 
-    public static void readExpense() {
-        try (FileReader fr = new FileReader(file);
-             BufferedReader br = new BufferedReader(fr)) {
+    public static void DeleteExpense(int id) {
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            List<String> dados = new ArrayList<>();
             String line;
             while ((line = br.readLine()) != null) {
-
+                dados.add(line);
             }
+            BufferedWriter bw = new BufferedWriter(new FileWriter(file));
 
+            for (int i = 0; i < dados.size(); i++) {
+                String[] split = dados.get(i).split(",");
+                if (split[0].equals("ID") || Integer.parseInt(split[0]) != id) {
+                    bw.write(dados.get(i));
+                    bw.newLine();
+                }
+                bw.flush();
+            }
+            bw.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
-
 }
