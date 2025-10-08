@@ -13,7 +13,15 @@ public class App {
 
         switch (args[1]) {
             case "help":
-                System.out.println(help);
+                System.out.println("""
+                     --------------------------------------------------------------------------------------------
+                    | Add expense:             expense-tracker add --description <description> --amount <value>  |
+                    | Delete expense:          expense-tracker delete --id <id>                                  |
+                    | List expenses:           expense-tracker list                                              | 
+                    | Total expenses:          expense-tracker summary                                           |
+                    | Total monthly expenses:  expense-tracker summary --month <number month>                    |
+                     --------------------------------------------------------------------------------------------
+                        """);
                 break;
 
             case "add":
@@ -60,13 +68,4 @@ public class App {
 
     }
 
-    private static final String help = """
-             --------------------------------------------------------------------------------------------
-            | Add expense:             expense-tracker add --description <description> --amount <value>  |
-            | Delete expense:          expense-tracker delete --id <id>                                  |
-            | List expenses:           expense-tracker list                                              | 
-            | Total expenses:          expense-tracker summary                                           |
-            | Total monthly expenses:  expense-tracker summary --month <number month>                    |
-             --------------------------------------------------------------------------------------------
-            """;
 }
