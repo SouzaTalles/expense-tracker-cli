@@ -13,6 +13,8 @@ public class ExpenseService {
     }
 
     public void delete(String[] ex) {
-        ExpenseRepository.DeleteExpense(Integer.parseInt(ex[3]));
+        ExpenseRepository.deleteExpense(Integer.parseInt(ex[3]));
     }
+
+
 }

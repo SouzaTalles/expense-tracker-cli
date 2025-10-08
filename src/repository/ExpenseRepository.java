@@ -27,7 +27,7 @@ public class ExpenseRepository {
         }
     }
 
-    public static void DeleteExpense(int id) {
+    public static void deleteExpense(int id) {
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             List<String> dados = new ArrayList<>();
             String line;
@@ -48,5 +48,18 @@ public class ExpenseRepository {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static List<String> listExpense() {
+        List<String> dados = new ArrayList<>();
+        try(BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                dados.add(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return dados;
     }
 }

@@ -1,4 +1,7 @@
+import repository.ExpenseRepository;
 import service.ExpenseService;
+
+import java.util.List;
 
 public class App {
     public static void main(String[] args) {
@@ -24,6 +27,21 @@ public class App {
                 break;
 
             case "list":
+                if (args.length != 2) throw new IllegalArgumentException("Invalid arguments. Type \"help\" for a list of commands.");
+                List<String> strings = ExpenseRepository.listExpense();
+                System.out.println("-------------------------------------------------------------");
+                for (String string : strings) {
+                    if (string != null) {
+                        String[] split = string.split(",");
+                        System.out.print("| ");
+                        for (String s : split) {
+                            System.out.printf("%-12s | ", s);
+                        }
+                        System.out.println();
+                        System.out.println("-------------------------------------------------------------");
+                    }
+                }
+
                 break;
             case "summary":
                 if (args.length == 2) {
