@@ -2,15 +2,14 @@ package repository;
 
 import expensefolder.Expense;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 
 public class ExpenseRepository {
 
+    private static File file = new File("expense.csv");
+
     public static void addExpense(Expense expense) {
-        File file = new File("expense.csv");
+
         boolean fileExists = file.exists();
         try (FileWriter fw = new FileWriter(file, true);
              BufferedWriter bw = new BufferedWriter(fw)) {
@@ -26,4 +25,19 @@ public class ExpenseRepository {
             ex.printStackTrace();
         }
     }
+
+    public static void readExpense() {
+        try (FileReader fr = new FileReader(file);
+             BufferedReader br = new BufferedReader(fr)) {
+            String line;
+            while ((line = br.readLine()) != null) {
+
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }

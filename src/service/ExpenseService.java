@@ -11,4 +11,8 @@ public class ExpenseService {
         );
         ExpenseRepository.addExpense(expense);
     }
+
+    public void Delete(String[] ex) {
+
+    }
 }
