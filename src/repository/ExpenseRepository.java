@@ -84,4 +84,29 @@ public class ExpenseRepository {
         }
         return somatotal;
     }
+
+    public static double totalMonthExpense(int month) {
+        double valor;
+        double somatotal = 0;
+        try(BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                dados.add(line);
+            }
+            for (String dado : dados) {
+                String[] split = dado.split(",");
+                if (!split[1].equals("DATE")) {
+                    String[] date = split[1].split("/");
+                    if (Integer.parseInt(date[1]) == month) {
+                        valor = Double.parseDouble(split[3]);
+                        somatotal += valor;
+                    }
+                }
+            }
+            return somatotal;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return somatotal;
+    }
 }

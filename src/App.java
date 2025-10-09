@@ -31,7 +31,7 @@ public class App {
 
             case "delete":
                 if (args.length != 4) throw new IllegalArgumentException("Invalid arguments. Type \"help\" for a list of commands.");
-                service.delete(args);
+                ExpenseRepository.deleteExpense(Integer.parseInt(args[3]));
                 break;
 
             case "list":
@@ -57,7 +57,8 @@ public class App {
                     System.out.println("Total expenses: " + v);
                 } else if (args.length == 4) {
                     int mes = Integer.parseInt(args[3]);
-                    // passar o mes como argumento
+                    double v = ExpenseRepository.totalMonthExpense(mes);
+                    System.out.println("Total expenses in month " + mes + ": " + v);
                 } else {
                     throw new IllegalArgumentException("Invalid arguments. Type \"help\" for a list of commands.");
                 }
