@@ -9,6 +9,7 @@ import java.util.List;
 public class ExpenseRepository {
 
     private static File file = new File("expense.csv");
+    private static List<String> dados = new ArrayList<>();
 
     public static void addExpense(Expense expense) {
         boolean fileExists = file.exists();
@@ -22,6 +23,7 @@ public class ExpenseRepository {
             bw.write(expense.toString());
             bw.newLine();
             bw.flush();
+
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -51,7 +53,6 @@ public class ExpenseRepository {
     }
 
     public static List<String> listExpense() {
-        List<String> dados = new ArrayList<>();
         try(BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = br.readLine()) != null) {
@@ -61,5 +62,26 @@ public class ExpenseRepository {
             e.printStackTrace();
         }
         return dados;
+    }
+
+    public static double totalExpense() {
+        double valor;
+        double somatotal = 0;
+        try(BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                dados.add(line);
+            }
+            for (String dado : dados) {
+                String[] split = dado.split(",");
+                if (split[3].equals("AMOUNT")) continue;
+                valor = Double.parseDouble(split[3]);
+                somatotal += valor;
+            }
+            return somatotal;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return somatotal;
     }
 }

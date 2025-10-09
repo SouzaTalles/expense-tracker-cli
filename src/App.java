@@ -53,7 +53,8 @@ public class App {
                 break;
             case "summary":
                 if (args.length == 2) {
-
+                    double v = ExpenseRepository.totalExpense();
+                    System.out.println("Total expenses: " + v);
                 } else if (args.length == 4) {
                     int mes = Integer.parseInt(args[3]);
                     // passar o mes como argumento
