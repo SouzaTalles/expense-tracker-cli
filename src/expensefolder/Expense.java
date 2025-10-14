@@ -16,7 +16,6 @@ public class Expense {
     private static final DateTimeFormatter dtf;
 
     static {
-        // nestid feito da forma errada precisa ler o ultimo criado no arquivo csv
         dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     }
 
@@ -57,36 +56,5 @@ public class Expense {
             e.printStackTrace();
             nextId = 1;
         }
-    }
-
-
-    public void setDate() {
-        this.date = LocalDate.now();
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setAmount(String amount) {
-        double doubleAmount = Double.parseDouble(amount);
-        if (doubleAmount < 0) amount = this.amount;
-        this.amount = amount;
-    }
-
-    public int getID() {
-        return ID;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public String getAmount() {
-        return amount;
-    }
-
-    public LocalDate getDate() {
-        return date;
     }
 }

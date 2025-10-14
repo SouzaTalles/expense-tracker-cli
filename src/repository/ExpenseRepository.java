@@ -11,8 +11,9 @@ public class ExpenseRepository {
     private static File file = new File("expense.csv");
     private static List<String> dados = new ArrayList<>();
 
-    public static void addExpense(Expense expense) {
+    public static boolean addExpense(Expense expense) {
         boolean fileExists = file.exists();
+        boolean added = false;
         try (FileWriter fw = new FileWriter(file, true);
              BufferedWriter bw = new BufferedWriter(fw)) {
             if (!fileExists) {
@@ -23,13 +24,54 @@ public class ExpenseRepository {
             bw.write(expense.toString());
             bw.newLine();
             bw.flush();
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
+            added = true;
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to save expense to file.", e);
         }
+        return added;
     }
 
-    public static void deleteExpense(int id) {
+    public static boolean deleteExpense(int id) {
+        boolean delete = false;
+        if (!file.exists()) {
+            return false;
+        }
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            List<String> dados = new ArrayList<>();
+            String line;
+            while ((line = br.readLine()) != null) {
+                dados.add(line);
+            }
+            BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+            for (int i = 0; i < dados.size(); i++) {
+                String[] split = dados.get(i).split(",");
+                if (split[0].equals("ID") || Integer.parseInt(split[0]) != id) {
+                    bw.write(dados.get(i));
+                    bw.newLine();
+                }
+                bw.flush();
+            }
+            bw.close();
+            delete = true;
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to delete expense in file.", e);
+        }
+        return delete;
+    }
+
+    public static List<String> listExpense() {
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                dados.add(line);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Error reading expenses from file.", e);
+        }
+        return dados;
+    }
+
+    public static void updateExpense(int id, String description, String amount) {
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             List<String> dados = new ArrayList<>();
             String line;
@@ -43,31 +85,22 @@ public class ExpenseRepository {
                 if (split[0].equals("ID") || Integer.parseInt(split[0]) != id) {
                     bw.write(dados.get(i));
                     bw.newLine();
+                } else {
+                    bw.write(id + "," + split[1] + "," + description + "," + amount);
+                    bw.newLine();
                 }
                 bw.flush();
             }
             bw.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Error updating expense in file.", e);
         }
-    }
-
-    public static List<String> listExpense() {
-        try(BufferedReader br = new BufferedReader(new FileReader(file))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                dados.add(line);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return dados;
     }
 
     public static double totalExpense() {
         double valor;
         double somatotal = 0;
-        try(BufferedReader br = new BufferedReader(new FileReader(file))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = br.readLine()) != null) {
                 dados.add(line);
@@ -80,15 +113,14 @@ public class ExpenseRepository {
             }
             return somatotal;
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Error calculating total expenses.", e);
         }
-        return somatotal;
     }
 
     public static double totalMonthExpense(int month) {
         double valor;
         double somatotal = 0;
-        try(BufferedReader br = new BufferedReader(new FileReader(file))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = br.readLine()) != null) {
                 dados.add(line);
@@ -105,8 +137,7 @@ public class ExpenseRepository {
             }
             return somatotal;
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Error calculating total expenses.", e);
         }
-        return somatotal;
     }
 }
