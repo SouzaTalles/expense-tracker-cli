@@ -8,6 +8,8 @@ public class App {
         if (args.length < 2) {
             throw new IllegalArgumentException("Invalid arguments. Type \"expense-tracker help\" for a list of commands.");
         }
+        int id;
+        double amount;
 
         switch (args[1]) {
             case "help":
@@ -24,11 +26,12 @@ public class App {
                 break;
 
             case "add":
-                if (args.length != 6)
-                    throw new IllegalArgumentException("Invalid arguments. Type \"help\" for a list of commands.");
+                if (args.length != 6) throw new IllegalArgumentException("Invalid arguments. Type \"expense-tracker help\" for a list of commands.");
+                amount = ExpenseRepository.parseDouble(args[5]);
+                if (amount <= 0) throw new IllegalArgumentException("Amount must be a positive number. Type \"expense-tracker help\" for a list of commands.");
                 Expense expense = new Expense(
                         args[3],
-                        args[5]
+                        amount
                 );
                 boolean b = ExpenseRepository.addExpense(expense);
                 if (b) {
@@ -39,9 +42,9 @@ public class App {
                 break;
 
             case "delete":
-                if (args.length != 4)
-                    throw new IllegalArgumentException("Invalid arguments. Type \"help\" for a list of commands.");
-                boolean b1 = ExpenseRepository.deleteExpense(Integer.parseInt(args[3]));
+                if (args.length != 4) throw new IllegalArgumentException("Invalid arguments. Type \"expense-tracker help\" for a list of commands.");
+                id = ExpenseRepository.parseInt(args[3]);
+                boolean b1 = ExpenseRepository.deleteExpense(id);
                 if (b1) {
                     System.out.println("Expense deleted successfully.");
                 } else {
@@ -50,13 +53,15 @@ public class App {
                 break;
 
             case "update":
-                if (args.length != 8) throw new IllegalArgumentException("Invalid arguments. Type \"help\" for a list of commands.");
-                ExpenseRepository.updateExpense(Integer.parseInt(args[3]), args[5], args[7]);
+                if (args.length != 8) throw new IllegalArgumentException("Invalid arguments. Type \"expense-tracker help\" for a list of commands.");
+                id = ExpenseRepository.parseInt(args[3]);
+                amount = ExpenseRepository.parseDouble(args[7]);
+                if (amount <= 0) throw new IllegalArgumentException("Amount must be a positive number. Type \"expense-tracker help\" for a list of commands.");
+                ExpenseRepository.updateExpense(id, args[5], amount);
                 break;
 
             case "list":
-                if (args.length != 2)
-                    throw new IllegalArgumentException("Invalid arguments. Type \"help\" for a list of commands.");
+                if (args.length != 2) throw new IllegalArgumentException("Invalid arguments. Type \"expense-tracker help\" for a list of commands.");
                 List<String> strings = ExpenseRepository.listExpense();
                 System.out.println("-------------------------------------------------------------");
                 for (String string : strings) {
@@ -77,16 +82,16 @@ public class App {
                     double v = ExpenseRepository.totalExpense();
                     System.out.println("Total expenses: " + v);
                 } else if (args.length == 4) {
-                    int mes = Integer.parseInt(args[3]);
+                    int mes = ExpenseRepository.parseInt(args[3]);
                     double v = ExpenseRepository.totalMonthExpense(mes);
                     System.out.println("Total expenses in month " + mes + ": " + v);
                 } else {
-                    throw new IllegalArgumentException("Invalid arguments. Type \"help\" for a list of commands.");
+                    throw new IllegalArgumentException("Invalid arguments. Type \"expense-tracker help\" for a list of commands.");
                 }
                 break;
 
             default:
-                throw new IllegalArgumentException("Invalid arguments. Type \"help\" for a list of commands.");
+                throw new IllegalArgumentException("Invalid arguments. Type \"expense-tracker help\" for a list of commands.");
         }
     }
 }

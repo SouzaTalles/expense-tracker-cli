@@ -10,7 +10,7 @@ import java.time.format.DateTimeFormatter;
 public class Expense {
     private final int ID;
     private String description;
-    private String amount;
+    private double amount;
     private LocalDate date;
     private int nextId;
     private static final DateTimeFormatter dtf;
@@ -19,7 +19,7 @@ public class Expense {
         dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     }
 
-    public Expense(String category, String amount) {
+    public Expense(String category, double amount) {
         initializeNextIdFromFile();
         this.ID = nextId;
         this.description = category;
@@ -47,7 +47,11 @@ public class Expense {
             }
             if (last != null && last.contains(",")) {
                 String[] split = last.split(",");
-                nextId = Integer.parseInt(split[0]);
+                try {
+                    nextId = Integer.parseInt(split[0]);
+                } catch (NumberFormatException e) {
+                    nextId = 1;
+                }
                 nextId++;
             } else {
                 nextId = 1;
