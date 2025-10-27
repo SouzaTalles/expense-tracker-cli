@@ -53,12 +53,12 @@ cd expense-tracker-cli
 
 ### 3. Compilar o projeto
 ```bash
-javac *.java
+javac -cp . src\App.java src\expensefolder\Expense.java src\repository\ExpenseRepository.java
 ```
 
 ### 4. Executar a aplicação
 ```bash
-java App <Commands>
+java -cp src App <Commands>
 ```
 
 ---
