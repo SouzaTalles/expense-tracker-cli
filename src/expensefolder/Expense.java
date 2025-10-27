@@ -57,8 +57,7 @@ public class Expense {
                 nextId = 1;
             }
         } catch (IOException e) {
-            e.printStackTrace();
-            nextId = 1;
+            throw new RuntimeException("Failed to read ID from expense file. Cannot initialize expense.", e);
         }
     }
 }

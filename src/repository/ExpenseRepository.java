@@ -10,7 +10,7 @@ public class ExpenseRepository {
 
     private static final File FILE = new File("expense.csv");
 
-    public static boolean addExpense(Expense expense) {
+    public static boolean addExpense(Expense expense) throws IOException {
         boolean fileExists = FILE.exists();
         boolean added;
         try (FileWriter fw = new FileWriter(FILE, true);
@@ -23,21 +23,18 @@ public class ExpenseRepository {
             bw.write(expense.toString());
             bw.newLine();
             bw.flush();
-            added = true;
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to save expense to file.", e);
         }
-        return added;
+        return true;
     }
 
-    public static boolean deleteExpense(int id) {
+    public static boolean deleteExpense(int id) throws IOException { // Adicione 'throws IOException'
         boolean delete = false;
         if (!FILE.exists()) {
             return false;
         }
-        try {
-            List<String> dados = readAll();
-            BufferedWriter bw = new BufferedWriter(new FileWriter(FILE));
+        List<String> dados = readAll();
+
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE))) {
             for (int i = 0; i < dados.size(); i++) {
                 String[] split = dados.get(i).split(",");
                 if (split.length < 4) continue;
@@ -46,91 +43,67 @@ public class ExpenseRepository {
                     bw.newLine();
                 }
             }
-            bw.flush();
-            bw.close();
             delete = true;
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to delete expense in file.", e);
         }
         return delete;
     }
 
-    public static List<String> listExpense() {
-        try {
-            return readAll();
-        } catch (IOException e) {
-            throw new RuntimeException("Error reading expenses from file.", e);
-        }
+    public static List<String> listExpense() throws IOException {
+        return readAll();
     }
 
-    public static void updateExpense(int id, String description, double amount) {
-        try {
-            List<String> dados = readAll();
-            BufferedWriter bw = new BufferedWriter(new FileWriter(FILE));
-
-            for (int i = 0; i < dados.size(); i++) {
-                String[] split = dados.get(i).split(",");
+    public static void updateExpense(int id, String description, double amount) throws IOException {
+        List<String> dados = readAll();
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE));) {
+            for (String dado : dados) {
+                String[] split = dado.split(",");
                 if (split.length < 4) continue;
                 if (split[0].equals("ID") || Integer.parseInt(split[0]) != id) {
-                    bw.write(dados.get(i));
+                    bw.write(dado);
                     bw.newLine();
                 } else {
                     bw.write(id + "," + split[1] + "," + description + "," + amount);
                     bw.newLine();
                 }
             }
-            bw.flush();
-            bw.close();
-        } catch (IOException e) {
-            throw new RuntimeException("Error updating expense in file.", e);
         }
     }
 
-    public static double totalExpense() {
+    public static double totalExpense() throws IOException {
         double valor;
         double somatotal = 0;
-        try {
-            List<String> dados = readAll();
-            for (String dado : dados) {
-                String[] split = dado.split(",");
-                if (split.length < 4) continue;
-                if (split[3].equals("AMOUNT")) continue;
-                valor = Double.parseDouble(split[3]);
-                somatotal += valor;
-            }
-            return somatotal;
-        } catch (IOException e) {
-            throw new RuntimeException("Error calculating total expenses.", e);
+        List<String> dados = readAll();
+        for (String dado : dados) {
+            String[] split = dado.split(",");
+            if (split.length < 4) continue;
+            if (split[3].equals("AMOUNT")) continue;
+            valor = Double.parseDouble(split[3]);
+            somatotal += valor;
         }
+        return somatotal;
     }
 
-    public static double totalMonthExpense(int month) {
+    public static double totalMonthExpense(int month) throws IOException {
         double valor;
         double somatotal = 0;
-
-        try {
-            List<String> dados = readAll();
-            for (String dado : dados) {
-                String[] split = dado.split(",");
-                if (split.length < 4) continue;
-                if (!split[1].equals("DATE")) {
-                    String[] date = split[1].split("/");
-                    if (Integer.parseInt(date[1]) == month) {
-                        valor = Double.parseDouble(split[3]);
-                        somatotal += valor;
-                    }
+        List<String> dados = readAll();
+        for (String dado : dados) {
+            String[] split = dado.split(",");
+            if (split.length < 4) continue;
+            if (!split[1].equals("DATE")) {
+                String[] date = split[1].split("/");
+                if (Integer.parseInt(date[1]) == month) {
+                    valor = Double.parseDouble(split[3]);
+                    somatotal += valor;
                 }
             }
-            return somatotal;
-        } catch (IOException e) {
-            throw new RuntimeException("Error calculating total expenses.", e);
         }
+        return somatotal;
     }
 
     private static List<String> readAll() throws IOException {
         List<String> dados = new ArrayList<>();
         if (!FILE.exists()) return dados;
-
         try (BufferedReader br = new BufferedReader(new FileReader(FILE))) {
             String line;
             while ((line = br.readLine()) != null) {
@@ -140,19 +113,5 @@ public class ExpenseRepository {
         return dados;
     }
 
-    public static double parseDouble(String s) {
-        try {
-            return Double.parseDouble(s);
-        }catch (NumberFormatException e){
-            throw new IllegalArgumentException("Invalid amount. Please provide a valid number. Type \"expense-tracker help\" for a list of commands.");
-        }
-    }
 
-    public static int parseInt(String s) {
-        try {
-            return Integer.parseInt(s);
-        }catch (NumberFormatException e){
-            throw new IllegalArgumentException("Invalid amount. Please provide a valid number. Type \"expense-tracker help\" for a list of commands.");
-        }
-    }
 }
